@@ -4,7 +4,7 @@ This is a demo environment that sets up a working Choria installation using Vagr
 
 ## Features
 
-This setup builds a 3 node cluster, 1 Puppet Server + Choria Broker and 2 other nodes, all running CentOS 7.
+This setup builds a 3 node cluster, 1 Puppet Server + Choria Broker and 2 other nodes, all running Rocky Linux version 8.
 
  * [Choria Streams](https://choria.io/docs/streams/)
  * [Puppet Tasks](https://choria.io/docs/tasks)
