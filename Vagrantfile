@@ -4,7 +4,7 @@
 # vi: set ft=ruby :
 
 INSTANCES = 2
-box_info = { name: 'generic/rocky8', version: '4.3.1' }
+box_info = { name: 'generic/rocky8', version: '4.3.12' }
 
 PROVISION_PUPPET = <<~PUPPET
   /bin/rpm -Uvh https://yum.puppet.com/puppet7-release-el-8.noarch.rpm
