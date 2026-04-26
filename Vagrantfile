@@ -7,8 +7,12 @@ INSTANCES = 2
 box_info = { name: 'generic/rocky8', version: '4.3.12' }
 
 PROVISION_PUPPET = <<~PUPPET
+  /usr/bin/dnf makecache
+  /usr/bin/dnf upgrade -y
   /bin/rpm -Uvh https://yum.puppet.com/puppet7-release-el-8.noarch.rpm
   /usr/bin/dnf -y install puppet-agent
+  /usr/bin/dnf autoremove -y
+  /usr/bin/dnf clean all
   echo '*' > /etc/puppetlabs/puppet/autosign.conf
   /opt/puppetlabs/bin/puppet resource host puppet.choria ensure=present ip=192.168.56.5 host_aliases=puppet
   mkdir -p /etc/puppetlabs/facter/facts.d
