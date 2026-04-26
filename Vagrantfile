@@ -4,6 +4,7 @@
 # vi: set ft=ruby :
 
 INSTANCES = 2
+box_info = { name: 'generic/rocky8', version: '4.3.1' }
 
 PROVISION_PUPPET = <<~PUPPET
   /bin/rpm -Uvh https://yum.puppet.com/puppet7-release-el-8.noarch.rpm
@@ -18,7 +19,8 @@ Vagrant.configure('2') do |config|
   config.vm.synced_folder '.', '/vagrant', type: 'virtualbox'
 
   config.vm.define :puppet do |vmconfig|
-    vmconfig.vm.box = 'generic/rocky8'
+    vmconfig.vm.box = box_info[:name]
+    vmconfig.vm.box_version = box_info[:version]
     vmconfig.vm.hostname = 'puppet.choria'
     vmconfig.vm.network :private_network, ip: '192.168.56.5'
     vmconfig.vm.provider :virtualbox do |vb|
@@ -59,7 +61,8 @@ Vagrant.configure('2') do |config|
 
   INSTANCES.times do |i|
     config.vm.define "instance#{i}" do |vmconfig|
-      vmconfig.vm.box = 'generic/rocky8'
+      vmconfig.vm.box = box_info[:name]
+      vmconfig.vm.box_version = box_info[:version]
       vmconfig.vm.hostname = "choria#{i}.choria"
       vmconfig.vm.network :private_network, ip: format('192.168.56.%d', 9 + i)
       vmconfig.vm.provider :virtualbox do |vb|
