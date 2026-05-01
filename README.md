@@ -42,15 +42,20 @@ If the setup step completed correctly you are ready to use some features of Chor
 $ vagrant ssh puppet
 ```
 
-Now you need a unique certificate for you as a user (Authentication):
+If you want to confirm that the node can/cannot reach the Middleware (NATS) or the Certificate Authority, you can try the following:
 
 ```
-$ choria enroll
-Requesting certificate for '/home/vagrant/.puppetlabs/etc/puppet/ssl/certs/vagrant.mcollective.pem'
-Waiting up to 240 seconds for it to be signed
+[vagrant@puppet ~]$ choria enroll
+Enrolling with the Security System using certname vagrant.mcollective
+Certificate fingerprint: cc1448fe799899393cd466384abfdc0c1dad41ac87ff697c66abd63687ac69ad
 
-Certificate /home/vagrant/.puppetlabs/etc/puppet/ssl/certs/vagrant.mcollective.pem has been stored in /home/vagrant/.puppetlabs/etc/puppet/ssl
+Attempting to download certificate for vagrant.mcollective, try 1
+[vagrant@puppet ~]$ choria enroll
+Enrolling with the Security System using certname vagrant.mcollective
+choria: error: Could not enroll: already have all files needed for SSL operations
 ```
+
+The second attempt will fail and this is the expected behaviour, because this configuration should happen automatically (as mentioned in the first attemp output).
 
 You can do a quick connectivity test:
 
