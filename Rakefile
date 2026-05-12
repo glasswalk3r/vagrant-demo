@@ -2,6 +2,8 @@
 
 desc 'Update Choria modules'
 task :update do
+  module_path = File.expand_path('environments/production/modules')
+
   modules = [
     'choria/choria',
     'choria/mcollective_data_sysctl',
@@ -22,12 +24,12 @@ task :update do
     'puppetlabs/puppet_authorization'
   ]
 
-  rm_rf 'environments/production/modules'
-  mkdir_p 'environments/production/modules'
+  rm_rf module_path
+  mkdir_p module_path
 
-  sh 'puppet module install --modulepath `pwd`/environments/production/modules puppetlabs/concat --version 7.3.3'
+  sh "puppet module install --modulepath #{module_path} puppetlabs/concat --version 7.3.3"
 
   modules.each do |mod|
-    sh "puppet module install --modulepath `pwd`/environments/production/modules #{mod}"
+    sh "puppet module install --modulepath #{module_path} #{mod}"
   end
 end
