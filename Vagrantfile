@@ -4,7 +4,7 @@
 # vi: set ft=ruby :
 
 INSTANCES = 2
-box_info = { name: 'bento/rockylinux-8.10', version: '202510.26.0' }
+BOX_NAME = 'custom/rockylinux-8.10'
 
 PROVISION_OPENVOX = <<~OPENVOX
   ROLE_FILE=/etc/puppetlabs/facter/facts.d/role.txt
@@ -12,12 +12,6 @@ PROVISION_OPENVOX = <<~OPENVOX
   then
       echo 'Packages already installed, nothing to do'
   else
-      /usr/bin/dnf makecache
-      /usr/bin/dnf upgrade -y
-      /bin/rpm -Uvh https://yum.voxpupuli.org/openvox7-release-el-8.noarch.rpm
-      /usr/bin/dnf -y install openvox-agent
-      /usr/bin/dnf autoremove -y
-      /usr/bin/dnf clean all
       echo '*' > /etc/puppetlabs/puppet/autosign.conf
       /opt/puppetlabs/bin/puppet resource host puppet.choria ensure=present ip=192.168.56.5 host_aliases=puppet
       mkdir -p /etc/puppetlabs/facter/facts.d
@@ -29,18 +23,18 @@ Vagrant.configure('2') do |config|
   config.vm.synced_folder '.', '/vagrant', type: 'virtualbox'
 
   config.vm.define :puppet do |vmconfig|
-    vmconfig.vm.box = box_info[:name]
-    vmconfig.vm.box_version = box_info[:version]
+    vmconfig.vm.box = BOX_NAME
     vmconfig.vm.hostname = 'puppet.choria'
     vmconfig.vm.network :private_network, ip: '192.168.56.5'
     vmconfig.vm.network :forwarded_port, guest: 9100, host: 9100, id: 'Prometheus'
     vmconfig.vm.provider :virtualbox do |vb|
+      vb.linked_clone = true
       vb.customize ['modifyvm', :id, '--memory', 3072]
       vb.customize ['modifyvm', :id, '--graphicscontroller', 'vmsvga']
       vb.customize ['modifyvm', :id, '--vram', '16']
+      vb.name = "openvox"
     end
 
-    vmconfig.vbguest.installer_options = { allow_kernel_upgrade: true }
     vmconfig.vbguest.auto_update = false
 
     vmconfig.vm.provision :shell do |s|
@@ -73,17 +67,17 @@ Vagrant.configure('2') do |config|
 
   INSTANCES.times do |i|
     config.vm.define "instance#{i}" do |vmconfig|
-      vmconfig.vm.box = box_info[:name]
-      vmconfig.vm.box_version = box_info[:version]
+      vmconfig.vm.box = BOX_NAME
       vmconfig.vm.hostname = "choria#{i}.choria"
       vmconfig.vm.network :private_network, ip: format('192.168.56.%d', 9 + i)
       vmconfig.vm.provider :virtualbox do |vb|
         vb.customize ['modifyvm', :id, '--memory', 1024]
         vb.customize ['modifyvm', :id, '--graphicscontroller', 'vmsvga']
         vb.customize ['modifyvm', :id, '--vram', '16']
+        vb.linked_clone = true
+        vb.name = "instance#{i}"
       end
 
-      vmconfig.vbguest.installer_options = { allow_kernel_upgrade: true }
       vmconfig.vbguest.auto_update = false
 
       vmconfig.vm.provision :shell do |s|

@@ -58,7 +58,7 @@ describe 'Choria configuration validation' do
     host = '127.0.0.1'
     user = 'vagrant'
     port = 2222
-    key_path = File.expand_path('.vagrant/machines/puppet/virtualbox/private_key', Dir.pwd)
+    key_path = File.expand_path('.vagrant.d/boxes/custom-VAGRANTSLASH-rockylinux-8.10/0/amd64/virtualbox/vagrant_private_key', ENV['HOME'])
     @ssh = Net::SSH.start(host, user, port: port, keys: [key_path], non_interactive: true)
   end
 

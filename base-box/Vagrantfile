@@ -1,0 +1,36 @@
+# frozen_string_literal: true
+
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+PACKAGES = <<~OPENVOX
+    /usr/bin/dnf remove -y cockpit-podman buildah container-selinux nmap-ncat podman-catatonit podman-gvproxy \
+        podman-plugins podman samba-client samba-common
+    /usr/bin/dnf makecache
+    /usr/bin/dnf upgrade -y
+    /bin/rpm -Uvh https://yum.voxpupuli.org/openvox7-release-el-8.noarch.rpm
+    /usr/bin/dnf -y install openvox-agent
+    /usr/bin/dnf autoremove -y
+    /usr/bin/dnf clean all
+OPENVOX
+
+Vagrant.configure('2') do |config|
+    config.vm.box = 'bento/rockylinux-8.10'
+    config.vm.box_version = '202510.26.0'
+    config.vm.hostname = 'puppet.choria'
+
+    config.vm.provider :virtualbox do |vb|
+        vb.customize ['modifyvm', :id, '--memory', 1024]
+        vb.customize ['modifyvm', :id, '--graphicscontroller', 'vmsvga']
+        vb.customize ['modifyvm', :id, '--vram', '16']
+        vb.name = "openvox-base"
+    end
+
+    config.vm.synced_folder ".", "/vagrant", disabled: ENV['ENABLE_SYNC'] == 'false'
+    config.vbguest.auto_update = ENV['AUTO_UPDATE'] == 'true'
+
+    config.vm.provision :packages, type: 'shell', inline: PACKAGES
+    config.vm.provision :vbguest, type: 'shell' do |s|
+        s.inline = '/usr/bin/dnf install -y kernel-devel-$(uname -r) kernel-headers-$(uname -r) make gcc perl elfutils-libelf-devel'
+    end
+end
