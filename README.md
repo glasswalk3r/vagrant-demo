@@ -80,8 +80,11 @@ Choria configuration validation
   choria ping reports the expected nodes
   choria facts properly identifies the nodes roles
 
-Finished in 5.41 seconds (files took 0.16431 seconds to load)
-2 examples, 0 failures
+Choria Prometheus Metrics
+  connects to http://puppet.choria:9100/metrics and validates metrics
+
+Finished in 5.45 seconds (files took 0.22996 seconds to load)
+3 examples, 0 failures
 
 ```
 
