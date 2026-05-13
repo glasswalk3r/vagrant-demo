@@ -81,7 +81,7 @@ class puppetdb::params inherits puppetdb::globals {
   $java_args               = {}
   $merge_default_java_args = true
 
-  $puppetdb_package     = 'puppetdb'
+  $puppetdb_package     = 'openvoxdb'
   $puppetdb_service     = 'puppetdb'
   $masterless           = false
 
@@ -135,7 +135,7 @@ class puppetdb::params inherits puppetdb::globals {
         fail("The fact 'osfamily' is set to ${::osfamily} which is not supported by the puppetdb module.")
       }
     }
-    $terminus_package       = 'puppetdb-termini'
+    $terminus_package       = 'openvoxdb-termini'
     $test_url               = '/pdb/meta/v1/version'
     $vardir                 = '/opt/puppetlabs/server/data/puppetdb'
     $database_embedded_path = "${vardir}/db/db"

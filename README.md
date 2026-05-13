@@ -6,18 +6,21 @@ This is a demo environment that sets up a working Choria installation using Vagr
 
 This setup builds a 3 node cluster, 1 Puppet Server + Choria Broker and 2 other nodes, all running Rocky Linux version 8.
 
- * [Choria Streams](https://choria.io/docs/streams/)
- * [Puppet Tasks](https://choria.io/docs/tasks)
- * [Choria Playbooks](https://choria.io/docs/playbooks)
- * [Puppet Agent](https://forge.puppet.com/choria/mcollective_agent_puppet)
- * [Package Agent](https://forge.puppet.com/choria/mcollective_agent_package)
- * [Service Agent](https://forge.puppet.com/choria/mcollective_agent_service)
- * [File Manager Agent](https://forge.puppet.com/choria/mcollective_agent_filemgr)
- * [Shell Agent](https://forge.puppet.com/choria/mcollective_agent_shell)
- * [Net Test Agent](https://forge.puppet.com/choria/mcollective_agent_nettest)
- * [Process Agent](https://forge.puppet.com/choria/mcollective_agent_process)
- * Standard Choria features like Authentication, Authorization and Auditing
- * Various Choria Scout checks configured
+- [Choria Streams](https://choria.io/docs/streams/)
+- [Puppet Tasks](https://choria.io/docs/tasks)
+- [Choria Playbooks](https://choria.io/docs/playbooks)
+- [Puppet Agent](https://forge.puppet.com/choria/mcollective_agent_puppet)
+- [Package Agent](https://forge.puppet.com/choria/mcollective_agent_package)
+- [Service Agent](https://forge.puppet.com/choria/mcollective_agent_service)
+- [File Manager Agent](https://forge.puppet.com/choria/mcollective_agent_filemgr)
+- [Shell Agent](https://forge.puppet.com/choria/mcollective_agent_shell)
+- [Net Test Agent](https://forge.puppet.com/choria/mcollective_agent_nettest)
+- [Process Agent](https://forge.puppet.com/choria/mcollective_agent_process)
+- Standard Choria features like Authentication, Authorization and Auditing
+- Various Choria Scout checks configured
+
+Beware that Puppet was replaced by [OpenVox](https://voxpupuli.org/openvox/install/), so although the packages are
+different, Systemd services names and configurations remains the same.
 
 ## Requirements
 

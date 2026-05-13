@@ -26,7 +26,7 @@ class puppet::server::install {
   }
 
   if $puppet::manage_packages == true or $puppet::manage_packages == 'server' {
-    $server_package = pick($puppet::server::package, 'puppetserver')
+    $server_package = pick($puppet::server::package, 'openvox-server')
     $server_version = pick($puppet::server::version, $puppet::version)
 
     package { $server_package:

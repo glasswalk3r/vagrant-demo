@@ -6,7 +6,7 @@
 INSTANCES = 2
 box_info = { name: 'generic/rocky8', version: '4.3.12' }
 
-PROVISION_PUPPET = <<~PUPPET
+PROVISION_OPENVOX = <<~OPENVOX
   ROLE_FILE=/etc/puppetlabs/facter/facts.d/role.txt
   if [[ -f $ROLE_FILE ]]
   then
@@ -14,8 +14,8 @@ PROVISION_PUPPET = <<~PUPPET
   else
       /usr/bin/dnf makecache
       /usr/bin/dnf upgrade -y
-      /bin/rpm -Uvh https://yum.puppet.com/puppet7-release-el-8.noarch.rpm
-      /usr/bin/dnf -y install puppet-agent
+      /bin/rpm -Uvh https://yum.voxpupuli.org/openvox7-release-el-8.noarch.rpm
+      /usr/bin/dnf -y install openvox-agent
       /usr/bin/dnf autoremove -y
       /usr/bin/dnf clean all
       echo '*' > /etc/puppetlabs/puppet/autosign.conf
@@ -23,7 +23,7 @@ PROVISION_PUPPET = <<~PUPPET
       mkdir -p /etc/puppetlabs/facter/facts.d
       echo "role=${1}" > /etc/puppetlabs/facter/facts.d/role.txt
   fi
-PUPPET
+OPENVOX
 
 Vagrant.configure('2') do |config|
   config.vm.synced_folder '.', '/vagrant', type: 'virtualbox'
@@ -44,33 +44,27 @@ Vagrant.configure('2') do |config|
     vmconfig.vbguest.auto_update = false
 
     vmconfig.vm.provision :shell do |s|
-      s.inline = PROVISION_PUPPET
+      s.inline = PROVISION_OPENVOX
       s.args = 'puppetserver'
     end
 
     vmconfig.vm.provision 'shell', inline: <<-SHELL
-      if systemctl status puppetserver --no-pager &> /dev/null
+      SERVICE_NAME=puppetserver
+      if systemctl status $SERVICE_NAME --no-pager &> /dev/null
       then
-          echo 'Puppet already installed, nothing to do'
+          echo 'OpenVox already installed, nothing to do'
       else
-          echo ">>> Installing PuppetServer..."
-          /bin/rpm -Uvh https://yum.puppet.com/puppetserver-release-el-8.noarch.rpm
-          dnf install -y puppetserver
-
+          /usr/bin/dnf install -y openvox-server
           echo ">>> Syncing environments to /etc/puppetlabs/code/environments..."
           rsync -a --delete /vagrant/environments/ /etc/puppetlabs/code/environments/
-
-          echo ">>> Starting PuppetServer..."
-          systemctl start puppetserver
-          systemctl enable puppetserver
-
+          systemctl start $SERVICE_NAME
+          systemctl enable $SERVICE_NAME
           sleep 10
-          systemctl status puppetserver --no-pager | head -5
+          systemctl status $SERVICE_NAME --no-pager | head -5
       fi
     SHELL
 
     vmconfig.vm.provision 'shell', inline: <<-SHELL
-      echo ">>> Running puppet apply to configure Choria and Puppet..."
       /opt/puppetlabs/bin/puppet apply /etc/puppetlabs/code/environments/production/manifests/default.pp \
         --hiera_config=/etc/puppetlabs/code/environments/production/hiera.yaml \
         --modulepath=/etc/puppetlabs/code/environments/production/modules:/etc/puppetlabs/code/environments/production/site
@@ -93,7 +87,7 @@ Vagrant.configure('2') do |config|
       vmconfig.vbguest.auto_update = false
 
       vmconfig.vm.provision :shell do |s|
-        s.inline = PROVISION_PUPPET
+        s.inline = PROVISION_OPENVOX
         s.args = 'managed'
       end
 
