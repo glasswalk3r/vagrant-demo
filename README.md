@@ -21,9 +21,11 @@ This setup builds a 3 node cluster, 1 Puppet Server + Choria Broker and 2 other 
 
 ## Requirements
 
- * Vagrant
- * Enough memory to run 1 x 3GB instance and 2 x 1GB instances
- * The `vbguest` plugin for Vagrant `vagrant plugin install vagrant-vbguest`
+- Install [Vagrant](https://developer.hashicorp.com/vagrant)
+- Enough memory to run 1 x 3GB instance and 2 x 1GB instances
+- The `vbguest` plugin for Vagrant `vagrant plugin install vagrant-vbguest`
+- Install Ruby
+- Install [Bundler](https://bundler.io/) (for automated tests only)
 
 ## Setup
 
@@ -36,7 +38,9 @@ $ vagrant up
 
 ## Usage
 
-If the setup step completed correctly you are ready to use some features of Choria:
+If the setup step completed correctly you are almost ready to use some features of Choria.
+
+First, connect to the Puppet server:
 
 ```
 $ vagrant ssh puppet
@@ -55,9 +59,33 @@ Enrolling with the Security System using certname vagrant.mcollective
 choria: error: Could not enroll: already have all files needed for SSL operations
 ```
 
-The second attempt will fail and this is the expected behaviour, because this configuration should happen automatically (as mentioned in the first attemp output).
+The second attempt will fail and this is the expected behaviour, because this configuration should happen automatically
+(as mentioned in the first attemp output).
 
-You can do a quick connectivity test:
+## Automated testing
+
+Now you can run some automated tests against the cluster. In order to do that, you will need to install dependencies of
+tests with Bundler. From inside this repository, run:
+```
+$ bundle install
+```
+
+The dependencies should be downloaded and installed automatically. After that, hit `bundle exec rspec --format d` to
+get an output similar to the one below:
+
+```
+$ bundle exec rspec
+
+Choria configuration validation
+  choria ping reports the expected nodes
+  choria facts properly identifies the nodes roles
+
+Finished in 5.41 seconds (files took 0.16431 seconds to load)
+2 examples, 0 failures
+
+```
+
+Of course, you can still do it manually:
 
 ```
 $ choria ping
@@ -72,7 +100,8 @@ choria1.choria                           time=25.75 ms
 
 ## Discovery
 
-Choria has Puppet integrated discovery features so you can address your server estate by metadata and not their names. Lets get a report of the roles assigned to the nodes:
+Choria has Puppet integrated discovery features so you can address your server estate by metadata and not their names.
+Lets get a report of the roles assigned to the nodes:
 
 ```
 $ choria facts role
@@ -92,7 +121,8 @@ choria0.choria
 choria1.choria
 ```
 
-Lets check when the `managed` nodes last ran Puppet, we use discovery to pick the nodes rather than having to remember hostnames:
+Lets check when the `managed` nodes last ran Puppet, we use discovery to pick the nodes rather than having to remember
+hostnames:
 
 ```
 $ mco puppet status -W role=managed
@@ -201,13 +231,14 @@ Inventory for puppet.choria:
 ....
 ```
 
-This is useful when debugging discovery issues or just to obtain information about a specific node. Any of the facts and classes you see can be used in discovery.
+This is useful when debugging discovery issues or just to obtain information about a specific node. Any of the facts
+and classes you see can be used in discovery.
 
 ### Basic Choria CLI behavior
 
-Choria commands will try to only show you the most appropriate information. What this
-means is if you tried to restart a service using Choria it will not show you every
-OK, it's only going to show you the cases where it could not complete your request:
+Choria commands will try to only show you the most appropriate information. What this means is if you tried to restart
+a service using Choria it will not show you every OK, it's only going to show you the cases where it could not
+complete your request:
 
 ```
 $ mco service restart sshd
@@ -489,7 +520,7 @@ This will produce auto generated help for the agent showing the available action
 
 And finally you can easily write a small script to perform the same url test action:
 
-```
+```ruby
 #!/opt/puppetlabs/puppet/bin/ruby
 
 require 'mcollective'
@@ -518,7 +549,8 @@ $ cat /var/log/puppetlabs/mcollective-audit.log
 
 ### Choria Scout
 
-Scout is a new feature that will enable monitoring pipelines to be built using Choria, further demo features will be added in future.
+Scout is a new feature that will enable monitoring pipelines to be built using Choria, further demo features will be
+added in future.
 
 A number of Scout Checks are configured:
 
@@ -551,10 +583,11 @@ Waiting for messages from topic choria.machine.watcher.*.state on nats://puppet:
 {"data":{"protocol":"io.choria.machine.watcher.nagios.v1.state","identity":"choria1.choria","id":"13808047-7298-4a7e-9f6d-5337887ca305","version":"1.0.0","timestamp":1594120453,"type":"nagios","machine":"heartbeat","name":"check","plugin":"","status":"OK","status_code":0,"output":"1594120453","check_time":1594120453,"perfdata":null,"runtime":0.000002961},"id":"b1716b62-db73-448a-834d-6b8cd722d987","source":"io.choria.machine","specversion":"1.0","subject":"choria1.choria","time":"2020-07-07T11:14:13Z","type":"io.choria.machine.watcher.nagios.v1.state"}
 ```
 
-The nodes will run Prometheus Node Exporter with Scout integration enabled, after a while you can see the data Choria Scout makes available to Prometheus:
+The nodes will run Prometheus Node Exporter with Scout integration enabled, after a while you can see the data Choria
+Scout makes available to Prometheus:
 
 ```
-$ curl -s http://localhost:9100/metrics|grep choria_
+$ curl -s http://localhost:9100/metrics | grep -F choria_
 # HELP choria_machine_nagios_start_time Time the Choria Machine subsystem started in unix seconds
 # TYPE choria_machine_nagios_start_time gauge
 choria_machine_nagios_start_time 1.594124867e+09
@@ -580,4 +613,5 @@ choria_machine_nagios_watcher_status{name="zombieprocs",status="UNKNOWN"} 3
 
 ## Further Reading
 
-There is a lot more to discover about Choria and more to try like [Playbooks](https://choria.io/docs/playbooks/) and [Tasks](https://choria.io/docs/tasks), review the documentation on the official site [choria.io](https://choria.io)
+There is a lot more to discover about Choria and more to try like [Playbooks](https://choria.io/docs/playbooks/) and
+[Tasks](https://choria.io/docs/tasks), review the documentation on the official site [choria.io](https://choria.io)
