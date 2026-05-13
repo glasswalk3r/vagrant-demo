@@ -4,7 +4,7 @@
 # vi: set ft=ruby :
 
 INSTANCES = 2
-box_info = { name: 'generic/rocky8', version: '4.3.12' }
+box_info = { name: 'bento/rockylinux-8.10', version: '202510.26.0' }
 
 PROVISION_OPENVOX = <<~OPENVOX
   ROLE_FILE=/etc/puppetlabs/facter/facts.d/role.txt
