@@ -4,7 +4,13 @@
 # vi: set ft=ruby :
 
 INSTANCES = 2
-BOX_NAME = 'custom/rockylinux-8.10'
+
+def read_box_name
+  config = JSON.parse(File.read(File.join(Dir.pwd, 'automation_config.json')))
+  config['boxName']
+end
+
+BOX_NAME = read_box_name
 
 PROVISION_OPENVOX = <<~OPENVOX
   ROLE_FILE=/etc/puppetlabs/facter/facts.d/role.txt

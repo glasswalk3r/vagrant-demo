@@ -53,12 +53,25 @@ def parse_roles(output)
   data
 end
 
+def read_box_name
+  config = JSON.parse(File.read(File.join(Dir.pwd, 'automation_config.json')))
+  config['boxName'].gsub('/', '-VAGRANTSLASH-')
+end
+
+def processor_architecture
+  if RUBY_PLATFORM == 'x86_64-linux'
+    'amd64'
+  else
+    RUBY_PLATFORM
+  end
+end
+
 describe 'Choria configuration validation' do
   before(:all) do
     host = '127.0.0.1'
     user = 'vagrant'
-    port = 2222
-    key_path = File.expand_path('.vagrant.d/boxes/custom-VAGRANTSLASH-rockylinux-8.10/0/amd64/virtualbox/vagrant_private_key', ENV['HOME'])
+    port = 2222 # port assigned to the first VM declared in the Vagrantfile
+    key_path = File.expand_path(".vagrant.d/boxes/#{read_box_name}/0/#{processor_architecture}/virtualbox/vagrant_private_key", Dir.home)
     @ssh = Net::SSH.start(host, user, port: port, keys: [key_path], non_interactive: true)
   end
 

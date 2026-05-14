@@ -1,4 +1,4 @@
-BOX_NAME := custom/rockylinux-8.10
+BOX_NAME := $(shell jq -r .boxName ../automation_config.json)
 BOX_FILE := custom_base.box
 # Dynamically detect architecture (e.g., x86_64, arm64)
 RAW_ARCH := $(shell uname -m)
