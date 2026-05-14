@@ -22,22 +22,35 @@ This setup builds a 3 node cluster, 1 Puppet Server + Choria Broker and 2 other 
 Beware that Puppet was replaced by [OpenVox](https://voxpupuli.org/openvox/install/), so although the packages are
 different, Systemd services names and configurations remains the same.
 
+This setup uses Virtualbox as virtualization solution and the configuration was optimized for it.
+
+Automated tests are also available to validate the environment configuration.
+
 ## Requirements
 
+- Install Virtualbox (version 7 or higher)
 - Install [Vagrant](https://developer.hashicorp.com/vagrant)
 - Enough memory to run 1 x 3GB instance and 2 x 1GB instances
 - The `vbguest` plugin for Vagrant `vagrant plugin install vagrant-vbguest`
 - Install Ruby
 - Install [Bundler](https://bundler.io/) (for automated tests only)
+- Install GNU Make
 
 ## Setup
+
+Long story short, after setting up the requirements:
 
 ```
 $ git clone https://github.com/choria-io/vagrant-demo.git
 $ cd vagrant-demo
 $ vagrant plugin install vagrant-vbguest
+$ cd base-box
+$ make box && make add-box
+$ cd ..
 $ vagrant up
 ```
+
+This setup uses a Vagrant box created locally. See the [README](base-box/README.md) file for more details.
 
 ## Usage
 
@@ -67,13 +80,14 @@ The second attempt will fail and this is the expected behaviour, because this co
 
 ## Automated testing
 
-Now you can run some automated tests against the cluster. In order to do that, you will need to install dependencies of
-tests with Bundler. From inside this repository, run:
+You can run automated tests against the cluster. In order to do that, you will need to install dependencies of tests
+with Bundler. From inside this repository, run:
+
 ```
 $ bundle install
 ```
 
-The dependencies should be downloaded and installed automatically. After that, hit `bundle exec rspec --format d` to
+The dependencies should be downloaded and installed automatically. After that, hit `bundle exec rspec` to
 get an output similar to the one below:
 
 ```
