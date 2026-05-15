@@ -49,3 +49,7 @@ CDROM with the required source code.
 
 If you need, for any reason, to change the box name, refer to the file `automation_config.json` (one level up this
 README) to change it. This file exists to make things DRY.
+
+## Running on Microsoft Windows
+
+The Powershell script `manage-box.ps1` has the same functionality of the `Makefile`.

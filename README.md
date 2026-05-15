@@ -1,5 +1,9 @@
 # Choria Vagrant Demo Environment
 
+This repository is a fork from the [original repository](https://github.com/choria-io/vagrant-demo/). The original
+repository author [is not interested](https://github.com/choria-io/vagrant-demo/pull/14) in keeping this Vagrant setup
+update anymore.
+
 This is a demo environment that sets up a working Choria installation using Vagrant and the official modules.
 
 ## Features
